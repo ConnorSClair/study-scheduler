@@ -1,6 +1,5 @@
 // temporary - remove data on load
-localStorage.removeItem("test")
-const topicNames = "topic-names"
+//removeAll();
 
 function load() {
     var topicNameData = localStorage.length;
@@ -10,8 +9,31 @@ function load() {
         // create a button for each topic in topicNameData
         for (i = 0; i < localStorage.length; i++) {
             var button = document.createElement("BUTTON");
-            button.innerHTML = localStorage.key(i);
+            name = localStorage.key(i)
+            button.innerHTML = name;
+            button.id = name;
+            //button.onclick = alert("hey");
             document.body.appendChild(button);
+            document.getElementById(name).setAttribute("onclick","studied(this)");
+            document.getElementById(name).style.backgroundColor = "grey"
+        }
+    }
+    colorise();
+}
+
+function colorise() {
+    for (i = 0; i < localStorage.length; i++) {
+        var today =  new Date();
+        var name = localStorage.key(i);
+        var dates = JSON.parse(localStorage.getItem(name));
+        if (dates != null) {
+            for (var dateStr of dates) {
+                date = new Date(dateStr);
+                if (sameDay(today,date)) {
+                    document.getElementById(name).style.backgroundColor = "blue"
+                    break;
+                }
+            }
         }
     }
 }
@@ -32,27 +54,30 @@ function submitTopic() {
         localStorage.setItem(name,dates_data);
         var button = document.createElement("BUTTON")
         button.innerHTML = name
+        button.id = name;
         document.body.appendChild(button)
+        document.getElementById(name).setAttribute("onclick","studied(this)");
     } else {
         // else alert user 
         alert("Topic with that name already exists")
     }
 }
 
-function studied() {
-    var name = "test"
+function studied(button) {
+    var name = button.id
     const today = new Date();
     var dates = JSON.parse(localStorage.getItem(name));
-    debugger;
     // assume not null
-    dates.forEach(dateStr => {
-        date = new Date(dateStr)
-        if (sameDay(today,date)) {
-            return
+    if (dates != null) {
+        for (var dateStr of dates) {
+            date = new Date(dateStr)
+            if (sameDay(today,date)) {
+                return
+            }
         }
-    });
+    }
     dates.push(today);
-    document.getElementById("test-topic").style.backgroundColor = "green";
+    document.getElementById(name).style.backgroundColor = "green";
     localStorage.setItem(name, JSON.stringify(dates));
 }
 
@@ -60,7 +85,7 @@ function studied() {
 
 
 function getStudyDates() {
-    var name = "test";
+    return 0
     var dates = JSON.parse(localStorage.getItem(name));
     dates.forEach(dateStr => console.log(dateStr));
 }
@@ -74,4 +99,10 @@ function print_local_storage() {
     for ( var i = 0, len = localStorage.length; i < len; ++i ) {
     console.log( localStorage.getItem( localStorage.key( i ) ) );
   }
+}
+
+function removeAll() {
+    for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+        localStorage.removeItem( localStorage.key( i ));
+    }
 }
