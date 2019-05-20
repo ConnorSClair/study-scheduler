@@ -27,9 +27,11 @@ def streak(dates: List[int],today: int) -> Streak_Logic:
             if diff == streak + 1:
                 streak += 1
             elif diff > streak + 1:
+                # missed a day
                 streak = 0
             else: 
                 continue
+                # prev remains where it was
             prev = this
         last_day = dates[len(dates) - 1]
         streak += 1
@@ -38,7 +40,6 @@ def streak(dates: List[int],today: int) -> Streak_Logic:
             result.streak = 0
         else:
             result.streak = streak
-        
         expected_next_session = last_day + streak
         days_until_next_study = expected_next_session - today
         if days_until_next_study < 0:
