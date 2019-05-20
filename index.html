@@ -5,14 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src = "scripts/script.js"></script>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
-
+    <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href = "styles/style.css">
     <title>Document</title>
 </head>
 <body>
     <h1>Study Scheduler</h1>
-    <textarea id = "new-topic"></textarea>
-    <button id = "submit-new-topic" onclick="newTopic()">Submit New Topic</button>
+    <div id = content>
+        <div id = "new-topics">
+            <input id = "new-topic"></input>
+            <button id = "submit-new-topic" onclick="newTopic()">Submit New Topic</button>
+        </div>
+        <div id = "buttons">
+            <button>testbutton</button>
+        </div>
+    </div>
     <script>on_load();</script>
+    
+
+    </div>
 </body>
 </html>

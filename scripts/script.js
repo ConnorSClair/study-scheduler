@@ -13,15 +13,27 @@ function create_button(name) {
     var button = document.createElement("BUTTON");
     button.innerHTML = name;
     button.id = name;
-    document.body.appendChild(button);
+    document.getElementById("buttons").appendChild(button);
     document.getElementById(name).setAttribute("onclick","studied(this)");
 }
 
 /* given a button that exists, colorise based on streak logic
 */
 function colorise_button(name) {
+    // simple first. studied today then green, otherwise grey
     if (name != "") {
-        document.getElementById(name).style.backgroundColor = "grey"
+        dates = retrieveData(name)
+        if (dates.length == 0) {
+            document.getElementById(name).style.backgroundColor = "grey";
+            return;
+        }
+        // assumes ordered from smallest to largest (latest date is at end of list)
+        date = Date(dates[dates.length - 1]) 
+        if (sameDay(new Date(date),new Date())) {
+            document.getElementById(name).style.backgroundColor = "green";
+        } else {
+            document.getElementById(name).style.backgroundColor = "grey";
+        }        
     }
 }
 
@@ -47,7 +59,6 @@ function newTopic() {
         return;
     }
     // check if button with that name already exists
-    debugger
     if (retrieveData(topic) == null) {
         storeData(topic,[]);
         create_button(topic);
@@ -72,8 +83,8 @@ function studied(button) {
         }
     }
     dates.push(today);
-    document.getElementById(name).style.backgroundColor = "green";
     storeData(name,dates);
+    colorise_button(name)
 }
 
 function sameDay(d1, d2) {

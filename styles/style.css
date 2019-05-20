@@ -1,0 +1,14 @@
+#buttons {
+    display: flex;
+    justify-content: center;
+    flex-direction: center;
+    color:red;
+}
+#content {
+    
+}
+#new-topics {
+    display: flex;
+    justify-content: flex-start;
+    flex: 0 1 auto;
+}
