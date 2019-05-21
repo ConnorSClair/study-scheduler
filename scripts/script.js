@@ -1,7 +1,12 @@
 /* Called when website is opened. Loads data from previous sessions using localStorage API */
 function on_load() {
-    for (i = 0; i < localStorage.length; i++) {
-        var name = localStorage.key(i);
+    var topicNameData = retrieveData("TOPIC-NAME-DATA");
+    if (topicNameData === null) {
+        topicNameData = []
+        storeData("TOPIC-NAME-DATA",topicNameData)
+    }
+    for (i = 0; i < topicNameData.length; i++) {
+        var name = topicNameData[i];
         create_button(name);
         colorise_button(name);
     }
@@ -41,13 +46,26 @@ function colorise_button(name) {
 function storeData(key,value) {
     var data = JSON.stringify(value);
     localStorage.setItem(key,data);
-
 }
 
 /* retrieve data from localStorage */
 function retrieveData(key) {
     var data = localStorage.getItem(key);
     return JSON.parse(data)
+}
+
+function appendData(key,value) {
+    var data = JSON.parse(localStorage.getItem(key));
+    if (Array.isArray(data)) {
+        data.push(value);
+        storeData(key,data)
+    }
+}
+
+
+/* write parse new topic text*/
+function parseUserInput() {
+    return "todo"
 }
 
 /* retrieves text from textField and creates a new button.
@@ -61,6 +79,7 @@ function newTopic() {
     // check if button with that name already exists
     if (retrieveData(topic) === null) {
         storeData(topic,[]);
+        appendData("TOPIC-NAME-DATA",topic)
         create_button(topic);
         colorise_button(topic);
     } else {
@@ -76,7 +95,7 @@ function studied(button) {
     var dates = retrieveData(name)
     if (dates != null) {
         for (var dateStr of dates) {
-            date = new Date(dateStr);
+            const date = new Date(dateStr);
             if (sameDay(today,date)) {
                 return;
             }
@@ -94,7 +113,7 @@ function sameDay(d1, d2) {
 }
 
 function deleteTopic() {
-    var topic_name = prompt("Type in the topic name you would like to delete")
+    const topic_name = prompt("Type in the topic name you would like to delete")
     if (retrieveData(topic_name) != null) {
         // TODO: remove button 
         localStorage.removeItem(topic_name);
