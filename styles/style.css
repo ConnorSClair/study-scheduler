@@ -1,11 +1,16 @@
+h1 {
+    text-align: center;
+}
+
 #buttons {
     display: flex;
     justify-content: center;
-    flex-direction: center;
+    flex-direction: column;
     color:red;
 }
 #content {
-    
+    margin: auto;
+    width: 50%;
 }
 #new-topics {
     display: flex;
