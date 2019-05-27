@@ -13,14 +13,14 @@ function on_load() {
 }
 
 /* create any button. Used on load as well as used when new study topic
-*/
+*/  
 function create_button(name) {
     var button = document.createElement("BUTTON");
     button.innerHTML = name;
     button.id = name;
     document.getElementById("buttons").appendChild(button);
     document.getElementById(name).setAttribute("onclick","studied(this)");
-    document.getElementById(name).setAttribute("class","waves-effect waves-light btn-large");
+    //document.getElementById(name).setAttribute("class","waves-effect waves-light btn-large");
 }
 
 /* given a button that exists, colorise based on streak logic
@@ -124,4 +124,26 @@ function deleteAllData() {
     for (var i = 0; i < localStorage.length; i++) {
         localStorage.removeItem(localStorage.key(i));
     }
+}
+
+function downloadCSV() {
+    var encodedUri = encodeURI(toCSV());
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "my_data.csv");
+    document.body.appendChild(link); // Required for FF
+    link.click();
+}
+
+function toCSV() {
+    var csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Topic,Date\r\n"
+    var topicNameData = retrieveData("TOPIC-NAME-DATA");
+    topicNameData.forEach(function(topic) {
+        var dates = retrieveData(topic)
+        dates.forEach(function(date) {
+            csvContent += `${topic},${date}\r\n`;
+        })
+    })
+    return csvContent
 }

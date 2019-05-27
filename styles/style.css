@@ -2,12 +2,20 @@ h1 {
     text-align: center;
 }
 
-#buttons {
+#menu {
     display: flex;
     margin: auto;
     justify-content: center;
     flex-direction: column;
     width: 10%;
+}
+
+#buttons {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    flex-direction: column;
+    width: 20%;
 }
 #content {
     margin: auto;
