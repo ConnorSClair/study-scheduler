@@ -5,7 +5,7 @@ Simple, client side, to-do list application that encourages users to study using
 - [x] Stored user data between browsing sessions 
 - [x] Click button to indicate the day when you studied this topic (green = studied, grey = not studied)
 - [ ] Implement streak logic (spaced study sessions)
-- [ ] Allow user to download data
+- [x] Allow user to download data
 - [ ] Allow user to delete data / delete a particular study topic / edit topic names
 
 ## Bugs/issues
