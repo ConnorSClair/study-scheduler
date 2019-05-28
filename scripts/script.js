@@ -1,5 +1,7 @@
 /* Called when website is opened. Loads data from previous sessions using localStorage API */
 function on_load() {
+    google.charts.load('current', {'packages':['table']});
+    
     var topicNameData = retrieveData("TOPIC-NAME-DATA");
     if (topicNameData === null) {
         topicNameData = []
@@ -127,12 +129,22 @@ function deleteAllData() {
 }
 
 function downloadCSV() {
-    var encodedUri = encodeURI(toCSV());
+    var encodedUri = encodeURI(toCSVExpandedDates(true));
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "my_data.csv");
     document.body.appendChild(link); // Required for FF
     link.click();
+}
+
+function displayData() {
+    var csvData = toCSVExpandedDates(false);
+    $.csv
+    debugger;
+    var arrayData = $.csv.toArrays(csvData,{onParseValue: $.csv.hooks.castToScalar});
+    var dataTable = new google.visualization.arrayToDataTable(arrayData);
+    var table = new google.visualization.Table(document.getElementById('table-div'));
+    table.draw(dataTable, {showRowNumber: false, page: 'enable', pageSize: 20, width: '100%', height: '100%'});
 }
 
 function toCSV() {
@@ -143,6 +155,27 @@ function toCSV() {
         var dates = retrieveData(topic)
         dates.forEach(function(date) {
             csvContent += `${topic},${date}\r\n`;
+        })
+    })
+    return csvContent
+}
+
+function toCSVExpandedDates(download) {
+    if (download) {
+        var csvContent = "data:text/csv;charset=utf-8,";
+    } else {
+        var csvContent = "";
+    }
+    csvContent += "Topic,Year,Month,Day\r\n"
+    var topicNameData = retrieveData("TOPIC-NAME-DATA");
+    topicNameData.forEach(function(topic) {
+        var dates = retrieveData(topic)
+        dates.forEach(function(dateStr) {
+            var date = new Date(dateStr);
+            var year = date.getFullYear();
+            var month = date.getMonth();
+            var day = date.getDate();
+            csvContent += `${topic},${year},${month},${day}\r\n`;
         })
     })
     return csvContent

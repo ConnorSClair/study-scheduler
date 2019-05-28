@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src = "scripts/script.js"></script>
-    <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href = "styles/style.css">
-    <title>Document</title>
+    <!--Imports -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+    <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    
+    <title>Study Scheduler</title>
 </head>
 <body>
     <h1>Study Scheduler</h1>
     <div id = "menu">
+        <button id = "display-data" onclick="displayData()">Tabulate Data</button>
         <button id = "download-csv" onclick="downloadCSV()">Download Data</button>
     </div>
     <div id = "content">
@@ -19,8 +25,8 @@
             <input id = "new-topic"></input>
             <button id = "submit-new-topic" onclick="newTopic()">Submit New Topic</button>
         </div>
-        <div id = "buttons">
-        </div>
+        <div id = "buttons"></div>
+        <div id = "table-div"></div>
     </div>
     <script>on_load();</script>
     

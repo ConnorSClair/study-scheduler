@@ -6,7 +6,7 @@ h1 {
     display: flex;
     margin: auto;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     width: 10%;
 }
 
