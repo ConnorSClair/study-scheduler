@@ -9,20 +9,37 @@ function on_load() {
     }
     for (i = 0; i < topicNameData.length; i++) {
         var name = topicNameData[i];
-        create_button(name);
+        // create_button(name);
+        create_button_and_info(name);
         colorise_button(name);
     }
 }
 
 /* create any button. Used on load as well as used when new study topic
 */  
+function create_button_and_info(name) {
+    var button = document.createElement("BUTTON");
+    button.style.width = "120px"
+    var button_div = document.createElement("div");
+    button_div.style.cssText = "flex-direction: row; display: inline-block; display: flex; margin: auto";
+    var text = document.createElement("p")
+    text.style.cssText = "flex-direction: row; display: inline-block";
+    text.innerHTML = "Streak: 7<br> Last Studied: 3 days ago"
+    button_div.id = name + "Div"
+    button.innerHTML = name;
+    button.id = name;
+    document.getElementById("buttons").appendChild(button_div)
+    button_div.appendChild(button)
+    button_div.appendChild(text)
+}
+
 function create_button(name) {
     var button = document.createElement("BUTTON");
     button.innerHTML = name;
     button.id = name;
     document.getElementById("buttons").appendChild(button);
     document.getElementById(name).setAttribute("onclick","studied(this)");
-    //document.getElementById(name).setAttribute("class","waves-effect waves-light btn-large");
+
 }
 
 /* given a button that exists, colorise based on streak logic
