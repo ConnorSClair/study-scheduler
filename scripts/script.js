@@ -114,17 +114,37 @@ function sameDay(d1, d2) {
       d1.getDate() === d2.getDate();
 }
 
+
+
+
+
 function deleteTopic() {
-    const topic_name = prompt("Type in the topic name you would like to delete")
-    if (retrieveData(topic_name) != null) {
-        // TODO: remove button 
-        localStorage.removeItem(topic_name);
-    }   
+    const topic_name = prompt("Type in the topic name you would like to delete");
+    var topicNameData = retrieveData("TOPIC-NAME-DATA");
+    const loc = topicNameData.indexOf(topic_name)
+    if (loc >= 0) {
+        if (retrieveData(topic_name) != null) {
+            topicNameData = topicNameData.filter(topic => topic !== topic_name)
+            storeData("TOPIC-NAME-DATA",topicNameData)
+            localStorage.removeItem(topic_name);
+            var button = document.getElementById(topic_name)
+            document.getElementById("buttons").removeChild(button)
+        }
+    }
 }
 
 function deleteAllData() {
-    for (var i = 0; i < localStorage.length; i++) {
-        localStorage.removeItem(localStorage.key(i));
+    const check = prompt("Type 'DELETE ALL' to delete all user data");
+    if (check === "DELETE ALL") {
+        var topicNameData = retrieveData("TOPIC-NAME-DATA");
+        for (var i = 0; i < topicNameData.length; i++) {
+            var name = topicNameData[i]
+            var button = document.getElementById(name)
+            document.getElementById("buttons").removeChild(button)
+            localStorage.removeItem(name)
+        }
+        localStorage.removeItem("TOPIC-NAME-DATA")
+        on_load()
     }
 }
 
