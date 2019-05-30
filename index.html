@@ -4,34 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--Styles -->
     <script src = "scripts/script.js"></script>
     <link rel="stylesheet" href = "styles/style.css">
-    <!--Imports -->
+    <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!--Import JavaScript Libraries -->
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
-    <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    
     <title>Study Scheduler</title>
 </head>
 <body>
-    <h1>Study Scheduler</h1>
-    <div id = "menu">
-        <button id = "display-data" onclick="displayData()">Tabulate Data</button>
-        <button id = "download-csv" onclick="downloadCSV()">Download Data</button>
-        <button id = "delete-topic" onclick="deleteTopic()">Delete Topic</button>
-        <button id = "delete-all" onclick="deleteAllData()">Delete All Data</button>
-    </div>
-    <div id = "content">
-        <div id = "new-topics">
-            <input id = "new-topic"></input>
-            <button id = "submit-new-topic" onclick="newTopic()">Submit New Topic</button>
+    <header>
+        <h1>Study Scheduler</h1>
+        <div id = "menu">
+            <button class = "menu-button" id = "display-data" onclick="displayData()">Tabulate Data</button>
+            <button class = "menu-button" id = "download-csv" onclick="downloadCSV()">Download Data</button>
+            <button class = "menu-button" id = "delete-topic" onclick="deleteTopic()">Delete Topic</button>
+            <button class = "menu-button" id = "delete-all" onclick="deleteAllData()">Delete All Data</button>
         </div>
-        <div id = "buttons"></div>
-        <div id = "table-div"></div>
-    </div>
-    <script>on_load();</script>
-    
+    </header>
+    <section>
+        <div id = "app">
+            <div id = "new-topics">
+                <input id = "new-topic"></input>
+                <button class = "menu-button" id = "submit-new-topic" onclick="newTopic()">Submit</button>
+            </div>
+            <div id = "widgit-columns">
+                <div class = "widgit-column">
+                    <div class = "widgit-column-padding">
+                        <h2 style = "text-align: center;">Today </h2>
+                        <div class = "topic-widgit">
+                            <button class = "topic-button">Concurrency</button>
+                            <p class = "topic-info">Streak: 7 Days<br>Next Session: Today</p>
+                        </div>
+                        <div class = "topic-widgit">
+                                <button class = "topic-button">Concurrency</button>
+                                <p class = "topic-info">Streak: 7 Days<br>Next Session: Today</p>
+                            </div>
+                    </div>
+                </div>
+                <div class = "widgit-column">
+                    <div class = "widgit-column-padding">
+                        <h2 style = "text-align: center;">Tomorrow</h2>
+                        <div class = "topic-widgit">
+                            <button class = "topic-button">Concurrency</button>
+                            <p class = "topic-info">Streak: 7 Days<br>Next Session: in 200 days</p>
+                        </div>
+                    </div>
+                </div>
+                <div class = "widgit-column">
+                    <div class = "widgit-column-padding">
+                        <h2 style = "text-align: center;">Later</h2>
+                        <div class = "topic-widgit">
+                            <button class = "topic-button">Concurrency</button>
+                            <p class = "topic-info">Streak: 7 Days<br>Next Session: tomorrow</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id = "buttons"></div>
+            <!-- TODO: Remove table-div-->
+            <div id = "table-div"></div>
+        </div>
+        <script>on_load();</script>
+    </section>
 
     </div>
 </body>

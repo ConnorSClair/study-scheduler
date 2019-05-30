@@ -1,5 +1,26 @@
+html {
+    display: grid;
+    height: 100vh;
+    margin: 0;
+    place-items: center center;
+}
+
+body {
+    width:1000px;
+    margin: auto;
+
+}
+
 h1 {
     text-align: center;
+}
+
+.widgit-column-padding {
+    margin: 5px;
+}
+
+.menu-button {
+    margin: 5px;
 }
 
 #menu {
@@ -7,7 +28,32 @@ h1 {
     margin: auto;
     justify-content: center;
     flex-direction: row;
-    width: 40%;
+    width: 80%;
+}
+
+#widgit-columns {
+    margin:0px auto; 
+    width:100%
+}
+
+.topic-widgit {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#new-topics {
+    margin:0px auto; 
+    width:40%;
+}
+
+.widgit-column {
+    float:left; 
+    margin:0; width:33%;
+}
+
+.topic-button {
+    margin:5px;
 }
 
 #buttons {
