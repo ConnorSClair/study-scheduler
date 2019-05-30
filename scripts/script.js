@@ -10,17 +10,59 @@ function on_load() {
     for (i = 0; i < topicNameData.length; i++) {
         var name = topicNameData[i];
         // create_button(name);
-        create_button_and_info(name);
-        colorise_button(name);
+        createTopicWidget(name);
+        //colorise_button(name);
     }
 }
 
 /* create any button. Used on load as well as used when new study topic
 */  
-function create_button_and_info(name) {
-    var button = document.createElement("BUTTON");
+
+/* 
+                        <div class = "topic-widget">
+                            <button class = "topic-button">Concurrency</button>
+                            <p class = "topic-info">Streak: 7 Days<br>Next Session: Today</p>
+                        </div>
+*/
+
+/* Whenever a widget needs to be drawn to the screen */
+function createTopicWidget(name) {
+    // create elements
+    var topicWidget = document.createElement("DIV");
+    var topicButton = document.createElement("BUTTON");
+    var topicInfo = document.createElement("P");
+
+    // create Ids
+    const widgetId = name + "-widget";
+    const buttonId = name + "-button";
+    const infoId = name + "-info";
+    
+    // solve for streak
+    // solve for last studied 
+    //streak = 
+    //lastStudied = 
+
+    // set attributes
+    topicWidget.setAttribute("id",widgetId);
+    topicWidget.setAttribute("class","topic-widget");
+    topicButton.setAttribute("id", buttonId);
+    topicButton.setAttribute("class","topic-button");
+    topicButton.setAttribute("onclick","studied(this)");
+    topicButton.innerHTML = name;
+    topicInfo.setAttribute("id",infoId);
+    topicInfo.setAttribute("class","topic-info");
+    topicInfo.innerHTML = "Streak: TODO<br>Next Session: TODO";
+
+    // add button and info to div container
+    topicWidget.appendChild(topicButton);
+    topicWidget.appendChild(topicInfo);
+    // add div container to correct column
+    document.getElementById("later").appendChild(topicWidget);
+    
+    /*
+
     button.style.width = "120px"
-    var button_div = document.createElement("div");
+    
     button_div.style.cssText = "flex-direction: row; display: inline-block; display: flex; margin: auto";
     var text = document.createElement("p")
     text.style.cssText = "flex-direction: row; display: inline-block";
@@ -31,14 +73,15 @@ function create_button_and_info(name) {
     document.getElementById("buttons").appendChild(button_div)
     button_div.appendChild(button)
     button_div.appendChild(text)
+    */
 }
 
 function create_button(name) {
     var button = document.createElement("BUTTON");
     button.innerHTML = name;
     button.id = name;
-    document.getElementById("buttons").appendChild(button);
-    document.getElementById(name).setAttribute("onclick","studied(this)");
+    return button;
+    
 
 }
 

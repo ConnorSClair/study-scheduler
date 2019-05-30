@@ -15,7 +15,7 @@ h1 {
     text-align: center;
 }
 
-.widgit-column-padding {
+.widget-column-padding {
     margin: 5px;
 }
 
@@ -31,14 +31,13 @@ h1 {
     width: 80%;
 }
 
-#widgit-columns {
+#widget-columns {
     margin:0px auto; 
     width:100%
 }
 
-.topic-widgit {
+.topic-widget {
     display: flex;
-    justify-content: center;
     flex-direction: row;
 }
 
@@ -47,13 +46,15 @@ h1 {
     width:40%;
 }
 
-.widgit-column {
+.widget-column {
     float:left; 
-    margin:0; width:33%;
+    margin:0;
+    width:33%;
 }
 
 .topic-button {
     margin:5px;
+    width: 140px;
 }
 
 #buttons {
