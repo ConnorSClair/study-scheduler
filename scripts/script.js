@@ -158,13 +158,17 @@ function downloadCSV() {
 }
 
 function displayData() {
-    var csvData = toCSVExpandedDates(false);
-    $.csv
-    debugger;
-    var arrayData = $.csv.toArrays(csvData,{onParseValue: $.csv.hooks.castToScalar});
-    var dataTable = new google.visualization.arrayToDataTable(arrayData);
-    var table = new google.visualization.Table(document.getElementById('table-div'));
-    table.draw(dataTable, {showRowNumber: false, page: 'enable', pageSize: 20, width: '100%', height: '100%'});
+    const tableDivReference = document.getElementById('table-div')
+    var tableReference = document.getElementsByClassName('google-visualization-table')
+    if (tableReference.length > 0) {
+        tableDivReference.removeChild(tableReference[0])
+    } else{
+        var csvData = toCSVExpandedDates(false);
+        var arrayData = $.csv.toArrays(csvData,{onParseValue: $.csv.hooks.castToScalar});
+        var dataTable = new google.visualization.arrayToDataTable(arrayData);
+        var table = new google.visualization.Table(document.getElementById('table-div'));
+        table.draw(dataTable, {showRowNumber: false, page: 'enable', pageSize: 20, width: '100%', height: '100%'});
+    }
 }
 
 function toCSV() {
