@@ -11,8 +11,23 @@ function on_load() {
         var name = topicNameData[i];
         // create_button(name);
         createTopicWidget(name);
-        //colorise_button(name);
+        colorise_button(name);
+        updateInfo(name)
     }
+}
+
+function updateInfo(name) {
+    var info = $(`#${name}-info`)[0];
+    const currentStreak = getCurrentStreak(name);
+    const daysUntilNextSession = daysLeft(name);
+    info.innerHTML = `Streak: ${currentStreak}<br>Next Session: in ${daysUntilNextSession} days`;
+}
+
+function getCurrentStreak(name) {
+    return 3
+}
+function daysLeft(name) {
+    return 5
 }
 
 /* create any button. Used on load as well as used when new study topic
@@ -34,7 +49,7 @@ function createTopicWidget(name) {
 
     // create Ids
     const widgetId = name + "-widget";
-    const buttonId = name + "-button";
+    const buttonId = name // + "-button";
     const infoId = name + "-info";
     
     // solve for streak
@@ -91,16 +106,18 @@ function colorise_button(name) {
     // simple first. studied today then green, otherwise grey
     if (name != "") {
         var dates = retrieveData(name)
+        const topicWidget = document.getElementById(name + "-widget");
+        button = $(`#${name}-widget`).find(":button")[0]
         if (dates.length === 0) {
-            document.getElementById(name).style.backgroundColor = "grey";
-            return;
+            button.style.backgroundColor = "grey";
+            
+        } else {
+            // assumes ordered from smallest to largest (latest date is at end of list)
+            const latestDate = new Date(dates[dates.length - 1]) 
+            button.style.backgroundColor= sameDay(latestDate, new Date()) ?
+                '#0c875a' :
+                '#286aa8';
         }
-        // assumes ordered from smallest to largest (latest date is at end of list)
-        const latestDate = new Date(dates[dates.length - 1]) 
-        const nameElement = document.getElementById(name);
-        nameElement.style.backgroundColor= sameDay(latestDate, new Date()) ?
-            '#0c875a' :
-            '#286aa8';
     }
 }
 
@@ -134,15 +151,15 @@ function parseUserInput() {
 appropriately handles no text or duplicate topics
 */ 
 function newTopic() {
-    var topic = document.getElementById("new-topic").value
-    if (topic === "") {
+    var topicName = document.getElementById("new-topic").value
+    if (topicName === "") {
         return;
     }
     // check if button with that name already exists
-    if (retrieveData(topic) === null) {
-        storeData(topic,[]);
+    if (retrieveData(topicName) === null) {
+        storeData(topicName,[]);
         appendData("TOPIC-NAME-DATA",topic)
-        create_button(topic);
+        createTopicWidget(topic);
         colorise_button(topic);
     } else {
         alert("Topic with that name already exists")
@@ -153,6 +170,7 @@ function newTopic() {
 */ 
 function studied(button) {
     var name = button.id
+
     const today = new Date();
     var dates = retrieveData(name)
     if (dates != null) {
