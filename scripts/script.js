@@ -37,7 +37,11 @@ function getCurrentStreak(name) {
                 day = nextDay;
                 expectedDay = day + streak;
             } else if (nextDay < expectedDay) {
-                continue;
+                day = nextDay;
+                expectedDay = day + streak;
+                // todo: implement logic properly 
+                // currnetly letting a study session "restart" the current streak
+                //continue;
             } else {
                 // missed a day, streak back to 1
                 streak = 1;
@@ -125,7 +129,17 @@ function createTopicWidget(name) {
     topicWidget.appendChild(topicButton);
     topicWidget.appendChild(topicInfo);
     // add div container to correct column
-    document.getElementById("later").appendChild(topicWidget);
+    var columnName; 
+    if (daysLeft(name) === 0) {
+        columnName = "today-column"
+    } else if (lastStudied(name) === "today") {
+        columnName = "today-column"
+    } else if (daysLeft(name) === 1) {
+        columnName = "tomorrow-column"
+    } else {
+        columnName = "later-column"
+    }
+    document.getElementById(columnName).appendChild(topicWidget);
 }
 
 function create_button(name) {
@@ -146,12 +160,12 @@ function colorise_button(name) {
         const topicWidget = document.getElementById(name + "-widget");
         button = $(`#${name}-widget`).find(":button")[0]
         if (dates.length === 0) {
-            button.style.backgroundColor = "grey";
+            button.style.backgroundColor = '#286aa8';
         } else {
             // assumes ordered from smallest to largest (latest date is at end of list)
             const latestDate = new Date(dates[dates.length - 1]) 
             button.style.backgroundColor= sameDay(latestDate, new Date()) ?
-                '#0c875a' :
+                '#0c875a':
                 '#286aa8';
         }
     }
@@ -238,16 +252,16 @@ function getDay(date) {
 }
 
 function deleteTopic() {
-    const topic_name = prompt("Type in the topic name you would like to delete");
+    const name = prompt("Type in the topic name you would like to delete");
     var topicNameData = retrieveData("TOPIC-NAME-DATA");
-    const loc = topicNameData.indexOf(topic_name)
+    const loc = topicNameData.indexOf(name)
     if (loc >= 0) {
-        if (retrieveData(topic_name) != null) {
-            topicNameData = topicNameData.filter(topic => topic !== topic_name)
+        if (retrieveData(name) != null) {
+            topicNameData = topicNameData.filter(topic => topic !== name)
             storeData("TOPIC-NAME-DATA",topicNameData)
-            localStorage.removeItem(topic_name);
-            var button = document.getElementById(topic_name)
-            document.getElementById("buttons").removeChild(button)
+            localStorage.removeItem(name);
+            var widget = document.getElementById(`${name}-widget`)
+            widget.parentElement.removeChild(widget)
         }
     }
 }
@@ -258,8 +272,8 @@ function deleteAllData() {
         var topicNameData = retrieveData("TOPIC-NAME-DATA");
         for (var i = 0; i < topicNameData.length; i++) {
             var name = topicNameData[i]
-            var button = document.getElementById(name)
-            document.getElementById("buttons").removeChild(button)
+            var widget = document.getElementById(`${name}-widget`)
+            widget.parentElement.removeChild(widget)
             localStorage.removeItem(name)
         }
         localStorage.removeItem("TOPIC-NAME-DATA")
