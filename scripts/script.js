@@ -12,7 +12,7 @@ function on_load() {
         // create_button(name);
         createTopicWidget(name);
         colorise_button(name);
-        updateInfo(name)
+        updateInfo(name);
     }
 }
 
@@ -20,7 +20,8 @@ function updateInfo(name) {
     var info = $(`#${name}-info`)[0];
     const currentStreak = getCurrentStreak(name);
     const daysUntilNextSession = daysLeft(name);
-    info.innerHTML = `Streak: ${currentStreak}<br>Next Session: in ${daysUntilNextSession} days`;
+    const studiedDaysAgo = lastStudied(name);
+    info.innerHTML = `<b>Streak: </b>${currentStreak}<br><b>Next Session:</b> in ${daysUntilNextSession} days<br><b>Last Studied:</b> ${studiedDaysAgo}`;
 }
 
 function getCurrentStreak(name) {
@@ -28,6 +29,20 @@ function getCurrentStreak(name) {
 }
 function daysLeft(name) {
     return 5
+}
+function lastStudied(name) {
+    var dates = retrieveData(name);
+    if (dates != null && dates.length > 0) {
+        const today = new Date();
+        const lastStudied = new Date(dates[dates.length - 1]);
+        if (sameDay(today,lastStudied)) {
+            return "today";
+        } else {
+            const diffDays = diffDates(today,lastStudied)
+            return `${diffDays} days ago`;
+        }
+    }
+    return "never"
 }
 
 /* create any button. Used on load as well as used when new study topic
@@ -158,9 +173,11 @@ function newTopic() {
     // check if button with that name already exists
     if (retrieveData(topicName) === null) {
         storeData(topicName,[]);
-        appendData("TOPIC-NAME-DATA",topic)
-        createTopicWidget(topic);
-        colorise_button(topic);
+        appendData("TOPIC-NAME-DATA",topicName)
+        createTopicWidget(topicName);
+        colorise_button(topicName);
+        updateInfo(topicName)
+
     } else {
         alert("Topic with that name already exists")
     }
@@ -171,25 +188,32 @@ function newTopic() {
 function studied(button) {
     var name = button.id
 
-    const today = new Date();
-    var dates = retrieveData(name)
+    
+    var dates = retrieveData(name);
     if (dates != null) {
-        for (var dateStr of dates) {
-            const date = new Date(dateStr);
-            if (sameDay(today,date)) {
-                return;
-            }
-        }
+        const today = new Date();
+        const lastStudied = new Date(dates[dates.length - 1]);
+        if (sameDay(today,lastStudied)) {
+            dates.pop();
+        } else {
+            dates.push(today);
+        }        
+        storeData(name,dates);
+        colorise_button(name);
+        updateInfo(name)
     }
-    dates.push(today);
-    storeData(name,dates);
-    colorise_button(name)
+    
 }
-
+/* Expects two date types*/
 function sameDay(d1, d2) {
     return d1.getFullYear() === d2.getFullYear() &&
       d1.getMonth() === d2.getMonth() &&
       d1.getDate() === d2.getDate();
+}
+function diffDates(d1, d2) {
+    const diffTime = Math.abs(d2.getTime() - d1.getTime());
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+    
 }
 
 

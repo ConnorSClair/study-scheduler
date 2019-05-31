@@ -2,13 +2,12 @@ html {
     display: grid;
     height: 100vh;
     margin: 0;
-    place-items: center center;
+    place-items: start center;
 }
 
 body {
-    width:1000px;
-    margin: auto;
-
+    display: inline;
+    width:1200px;
 }
 
 h1 {
