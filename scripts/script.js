@@ -25,10 +25,63 @@ function updateInfo(name) {
 }
 
 function getCurrentStreak(name) {
-    return 3
+    var dates = retrieveData(name);
+    if (dates != null && dates.length > 0) {
+        var streak = 1;
+        var day = getDay(new Date(dates[0]));
+        var expectedDay = day + streak;
+        for (let i = 1; i < dates.length; i++) {
+            var nextDay = getDay(new Date(dates[i]));
+            if (nextDay === expectedDay) {
+                streak += 1;
+                day = nextDay;
+                expectedDay = day + streak;
+            } else if (nextDay < expectedDay) {
+                continue;
+            } else {
+                // missed a day, streak back to 1
+                streak = 1;
+                day = nextDay;
+                expectedDay = day + streak;
+            }
+        }
+        // check today 
+        var today = getDay(new Date());
+        if (today === expectedDay) {
+            if (today === day) {
+                // studied today, and was expected to study today
+            } else {
+                // hasn't studied today, but is expected to study today
+            }
+            return streak;
+        } else if (today < expectedDay) {
+            // study tomorrow or later
+            return streak;
+        } else {
+            streak = 0;
+        }
+        return streak;
+    }
+    return 0;
 }
+
+
 function daysLeft(name) {
-    return 5
+    var dates = retrieveData(name);
+    streak = getCurrentStreak(name);
+    if (dates != null && dates.length > 0) {
+        var lastStudied = getDay(new Date(dates[dates.length - 1]));
+    } else {
+        var lastStudied = getDay(new Date());
+    }
+    var today = getDay(new Date());
+    // studied 1 + streak of 3, expect 4 and current is 2 
+    var diff = (lastStudied + streak) - today;
+    if (diff < 0) {
+        return 0;
+    } else {
+        return diff;
+    }
 }
 function lastStudied(name) {
     var dates = retrieveData(name);
@@ -45,15 +98,6 @@ function lastStudied(name) {
     return "never"
 }
 
-/* create any button. Used on load as well as used when new study topic
-*/  
-
-/* 
-                        <div class = "topic-widget">
-                            <button class = "topic-button">Concurrency</button>
-                            <p class = "topic-info">Streak: 7 Days<br>Next Session: Today</p>
-                        </div>
-*/
 
 /* Whenever a widget needs to be drawn to the screen */
 function createTopicWidget(name) {
@@ -66,11 +110,6 @@ function createTopicWidget(name) {
     const widgetId = name + "-widget";
     const buttonId = name // + "-button";
     const infoId = name + "-info";
-    
-    // solve for streak
-    // solve for last studied 
-    //streak = 
-    //lastStudied = 
 
     // set attributes
     topicWidget.setAttribute("id",widgetId);
@@ -81,29 +120,12 @@ function createTopicWidget(name) {
     topicButton.innerHTML = name;
     topicInfo.setAttribute("id",infoId);
     topicInfo.setAttribute("class","topic-info");
-    topicInfo.innerHTML = "Streak: TODO<br>Next Session: TODO";
 
     // add button and info to div container
     topicWidget.appendChild(topicButton);
     topicWidget.appendChild(topicInfo);
     // add div container to correct column
     document.getElementById("later").appendChild(topicWidget);
-    
-    /*
-
-    button.style.width = "120px"
-    
-    button_div.style.cssText = "flex-direction: row; display: inline-block; display: flex; margin: auto";
-    var text = document.createElement("p")
-    text.style.cssText = "flex-direction: row; display: inline-block";
-    text.innerHTML = "Streak: 7<br> Last Studied: 3 days ago"
-    button_div.id = name + "Div"
-    button.innerHTML = name;
-    button.id = name;
-    document.getElementById("buttons").appendChild(button_div)
-    button_div.appendChild(button)
-    button_div.appendChild(text)
-    */
 }
 
 function create_button(name) {
@@ -125,7 +147,6 @@ function colorise_button(name) {
         button = $(`#${name}-widget`).find(":button")[0]
         if (dates.length === 0) {
             button.style.backgroundColor = "grey";
-            
         } else {
             // assumes ordered from smallest to largest (latest date is at end of list)
             const latestDate = new Date(dates[dates.length - 1]) 
@@ -183,12 +204,9 @@ function newTopic() {
     }
 }
 
-/* on button press
-*/ 
+/* on button press */ 
 function studied(button) {
-    var name = button.id
-
-    
+    var name = button.id;
     var dates = retrieveData(name);
     if (dates != null) {
         const today = new Date();
@@ -204,7 +222,7 @@ function studied(button) {
     }
     
 }
-/* Expects two date types*/
+/* Expects two date types (todo: replace this with diffDates) */
 function sameDay(d1, d2) {
     return d1.getFullYear() === d2.getFullYear() &&
       d1.getMonth() === d2.getMonth() &&
@@ -213,12 +231,11 @@ function sameDay(d1, d2) {
 function diffDates(d1, d2) {
     const diffTime = Math.abs(d2.getTime() - d1.getTime());
     return Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
-    
 }
 
-
-
-
+function getDay(date) {
+    return Math.floor(date.getTime() / (1000 * 60 * 60 * 24)); 
+}
 
 function deleteTopic() {
     const topic_name = prompt("Type in the topic name you would like to delete");
