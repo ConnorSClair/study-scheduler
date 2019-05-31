@@ -1,6 +1,12 @@
 /* Called when website is opened. Loads data from previous sessions using localStorage API */
 function on_load() {
     google.charts.load('current', {'packages':['table']});
+
+    document.querySelector("#new-topic").addEventListener("keyup", event => {
+        if(event.key !== "Enter") return; // Use `.key` instead.
+        document.querySelector("#submit-new-topic").click(); // Things you want to do.
+        event.preventDefault(); // No need to `return false;`.
+    });
     
     var topicNameData = retrieveData("TOPIC-NAME-DATA");
     if (topicNameData === null) {
@@ -9,7 +15,6 @@ function on_load() {
     }
     for (i = 0; i < topicNameData.length; i++) {
         var name = topicNameData[i];
-        // create_button(name);
         createTopicWidget(name);
         colorise_button(name);
         updateInfo(name);
@@ -121,7 +126,7 @@ function createTopicWidget(name) {
     topicButton.setAttribute("id", buttonId);
     topicButton.setAttribute("class","topic-button");
     topicButton.setAttribute("onclick","studied(this)");
-    topicButton.innerHTML = name;
+    topicButton.innerHTML = idToName(name);
     topicInfo.setAttribute("id",infoId);
     topicInfo.setAttribute("class","topic-info");
 
@@ -142,14 +147,6 @@ function createTopicWidget(name) {
     document.getElementById(columnName).appendChild(topicWidget);
 }
 
-function create_button(name) {
-    var button = document.createElement("BUTTON");
-    button.innerHTML = name;
-    button.id = name;
-    return button;
-    
-
-}
 
 /* given a button that exists, colorise based on streak logic
 */
@@ -193,8 +190,13 @@ function appendData(key,value) {
 
 
 /* write parse new topic text*/
-function parseUserInput() {
-    return "todo"
+function parseUserInput(str) {
+    str = str.replace(/ /g, "-");
+    return str
+}
+
+function idToName(str) {
+    return str.replace(/-/g, " ");
 }
 
 /* retrieves text from textField and creates a new button.
@@ -202,6 +204,7 @@ appropriately handles no text or duplicate topics
 */ 
 function newTopic() {
     var topicName = document.getElementById("new-topic").value
+    topicName = parseUserInput(topicName);
     if (topicName === "") {
         return;
     }
@@ -212,7 +215,7 @@ function newTopic() {
         createTopicWidget(topicName);
         colorise_button(topicName);
         updateInfo(topicName)
-
+        $("#new-topic")[0].value = '';
     } else {
         alert("Topic with that name already exists")
     }
@@ -252,7 +255,8 @@ function getDay(date) {
 }
 
 function deleteTopic() {
-    const name = prompt("Type in the topic name you would like to delete");
+    var name = prompt("Type in the topic name you would like to delete");
+    name = parseUserInput(name);
     var topicNameData = retrieveData("TOPIC-NAME-DATA");
     const loc = topicNameData.indexOf(name)
     if (loc >= 0) {
