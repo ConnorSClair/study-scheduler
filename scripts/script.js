@@ -1,4 +1,4 @@
-/* Called when website is opened. Loads data from previous sessions using localStorage API */
+/* Called when website is refreshed. Sets things up. Loads data from previous sessions using localStorage API */
 function on_load() {
     google.charts.load('current', {'packages':['table']});
 
@@ -15,22 +15,32 @@ function on_load() {
     }
     for (i = 0; i < topicNameData.length; i++) {
         var name = topicNameData[i];
-        createTopicWidget(name);
+        refreshTopicWidget(name);
         colorise_button(name);
         updateInfo(name);
     }
 }
 
-function updateInfo(name) {
-    var info = $(`#${name}-info`)[0];
-    const currentStreak = getCurrentStreak(name);
-    const daysUntilNextSession = daysLeft(name);
-    const studiedDaysAgo = lastStudied(name);
-    info.innerHTML = `<b>Streak: </b>${currentStreak}<br><b>Next Session:</b> in ${daysUntilNextSession} days<br><b>Last Studied:</b> ${studiedDaysAgo}`;
+function updateInfo(topicName) {
+    var topicNameInfoId = $(`#${topicName}-info`)[0];
+    const currentStreak = getCurrentStreak(topicName);
+    const daysUntilNextSession = daysLeft(topicName);
+    //const studiedDaysAgo = lastStudied(topicName);
+    const _daysSinceStudied = daysSinceStudied(topicName);
+    var lastStudied;
+    if (_daysSinceStudied === -1) {
+        lastStudied = "never"
+    } else if (_daysSinceStudied === 0) {
+        lastStudied = "today"
+    } else {
+        lastStudied = `${_daysSinceStudied} days ago`
+    }
+    topicNameInfoId.innerHTML = `<b>Streak: </b>${currentStreak}<br><b>Next Session:</b> in ${daysUntilNextSession} days<br><b>Last Studied:</b> ${lastStudied}`;
 }
 
-function getCurrentStreak(name) {
-    var dates = retrieveData(name);
+/* Given a String topicName returns int representing the current study streak  */ 
+function getCurrentStreak(topicName) {
+    var dates = retrieveData(topicName);
     if (dates != null && dates.length > 0) {
         var streak = 1;
         var day = getDay(new Date(dates[0]));
@@ -42,11 +52,9 @@ function getCurrentStreak(name) {
                 day = nextDay;
                 expectedDay = day + streak;
             } else if (nextDay < expectedDay) {
+                // restart days left
                 day = nextDay;
                 expectedDay = day + streak;
-                // todo: implement logic properly 
-                // currnetly letting a study session "restart" the current streak
-                //continue;
             } else {
                 // missed a day, streak back to 1
                 streak = 1;
@@ -56,32 +64,27 @@ function getCurrentStreak(name) {
         }
         // check today 
         var today = getDay(new Date());
-        if (today === expectedDay) {
-            if (today === day) {
-                // studied today, and was expected to study today
-            } else {
-                // hasn't studied today, but is expected to study today
-            }
-            return streak;
-        } else if (today < expectedDay) {
-            // study tomorrow or later
+        if (today <= expectedDay) {
             return streak;
         } else {
-            streak = 0;
+            // missed a day
+            return 0;
         }
-        return streak;
     }
+    // never studied
     return 0;
 }
 
-
-function daysLeft(name) {
-    var dates = retrieveData(name);
-    streak = getCurrentStreak(name);
+/* Given a String topicName returns int representing the number of days left until the next study session
+e.g. 0 means study today, 1 means study tomorrow and so on */ 
+function daysLeft(topicName) {
+    var dates = retrieveData(topicName);
+    streak = getCurrentStreak(topicName);
     if (dates != null && dates.length > 0) {
         var lastStudied = getDay(new Date(dates[dates.length - 1]));
     } else {
-        var lastStudied = getDay(new Date());
+        // never studied
+        return 0;
     }
     var today = getDay(new Date());
     // studied 1 + streak of 3, expect 4 and current is 2 
@@ -92,24 +95,21 @@ function daysLeft(name) {
         return diff;
     }
 }
-function lastStudied(name) {
-    var dates = retrieveData(name);
+
+/* Returns days since last studied, 0 if studied today, -1 if never studied, 1 if studied yesterday*/ 
+function daysSinceStudied(topicName) {
+    var dates = retrieveData(topicName);
     if (dates != null && dates.length > 0) {
         const today = new Date();
         const lastStudied = new Date(dates[dates.length - 1]);
-        if (sameDay(today,lastStudied)) {
-            return "today";
-        } else {
-            const diffDays = diffDates(today,lastStudied)
-            return `${diffDays} days ago`;
-        }
+        return getDay(today) - getDay(lastStudied);
+    } else {
+        return -1;
     }
-    return "never"
 }
 
-
 /* Whenever a widget needs to be drawn to the screen */
-function createTopicWidget(name) {
+function refreshTopicWidget(name) {
     // create elements
     var topicWidget = document.createElement("DIV");
     var topicButton = document.createElement("BUTTON");
@@ -123,10 +123,12 @@ function createTopicWidget(name) {
     // set attributes
     topicWidget.setAttribute("id",widgetId);
     topicWidget.setAttribute("class","topic-widget");
+
     topicButton.setAttribute("id", buttonId);
     topicButton.setAttribute("class","topic-button");
     topicButton.setAttribute("onclick","studied(this)");
     topicButton.innerHTML = idToName(name);
+
     topicInfo.setAttribute("id",infoId);
     topicInfo.setAttribute("class","topic-info");
 
@@ -137,9 +139,9 @@ function createTopicWidget(name) {
     var columnName; 
     if (daysLeft(name) === 0) {
         columnName = "today-column"
-    } else if (lastStudied(name) === "today") {
+    } else if (daysSinceStudied(name) === 0) {
         columnName = "today-column"
-    } else if (daysLeft(name) === 1) {
+    } else if (daysSinceStudied(name) === 1) {
         columnName = "tomorrow-column"
     } else {
         columnName = "later-column"
@@ -148,10 +150,8 @@ function createTopicWidget(name) {
 }
 
 
-/* given a button that exists, colorise based on streak logic
-*/
+/* given a button that exists, colorise based on streak logic */
 function colorise_button(name) {
-    // simple first. studied today then green, otherwise grey
     if (name != "") {
         var dates = retrieveData(name)
         const topicWidget = document.getElementById(name + "-widget");
@@ -188,8 +188,7 @@ function appendData(key,value) {
     }
 }
 
-
-/* write parse new topic text*/
+/* todo: this is bad. write parse new topic text*/
 function parseUserInput(str) {
     str = str.replace(/ /g, "-");
     return str
@@ -212,7 +211,7 @@ function newTopic() {
     if (retrieveData(topicName) === null) {
         storeData(topicName,[]);
         appendData("TOPIC-NAME-DATA",topicName)
-        createTopicWidget(topicName);
+        refreshTopicWidget(topicName);
         colorise_button(topicName);
         updateInfo(topicName)
         $("#new-topic")[0].value = '';
@@ -235,7 +234,7 @@ function studied(button) {
         }        
         storeData(name,dates);
         colorise_button(name);
-        updateInfo(name)
+        updateInfo(name);
     }
     
 }
