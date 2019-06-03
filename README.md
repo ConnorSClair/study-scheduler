@@ -4,6 +4,8 @@ Simple, client side, to-do list application that encourages users to study using
 Submit, track and analyze personal study topic data through time. Increase your study streak by studying on successive days and be rewarded with longer times between sessions as you build up your streak - e.g. a streak of 3 days entitles you to a 2 day break.
 Your data is saved locally to the device and can be downloaded at any time.
 
+## Screenshot
+![screenshot](images/screen-shot.png "screenshot")
 
 ## Documentation
 ### Study Topics
@@ -17,17 +19,3 @@ Your data is saved locally to the device and can be downloaded at any time.
 - Download your data as a CSV file (openable in Excel, Google Sheets and other data manipulation applications) by clicking the 'Download Data' button
 - Delete all data by clicking the 'Delete All Data' button (all data for this topic will be removed and cannot be undone!)
 
-
-
-## Goals
-- [x] Create new study topics 
-- [x] Stored user data between browsing sessions 
-- [x] Click button to indicate the day when you studied this topic (green = studied, grey = not studied)
-- [ ] Implement streak logic (spaced study sessions)
-- [x] Allow user to download data
-- [x] Allow user to delete data / delete a particular study topic / edit topic names
-
-## Bugs/issues
-- [ ] Prevent duplicate topics made by substituting character case (e.g. "math" and "Math")
-- [ ] Text needs to scale with button size, or a cap on text length needs to be implemented 
-- [x] Current use of localStorage API needs to be improved (iterating over all localStorage right now)
