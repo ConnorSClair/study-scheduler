@@ -203,20 +203,24 @@ appropriately handles no text or duplicate topics
 */ 
 function newTopic() {
     var topicName = document.getElementById("new-topic").value
-    topicName = parseUserInput(topicName);
     if (topicName === "") {
         return;
     }
-    // check if button with that name already exists
-    if (retrieveData(topicName) === null) {
-        storeData(topicName,[]);
-        appendData("TOPIC-NAME-DATA",topicName)
-        refreshTopicWidget(topicName);
-        colorise_button(topicName);
-        updateInfo(topicName)
-        $("#new-topic")[0].value = '';
+    if (/^[a-zA-Z ]+$/.test(topicName)) {
+        topicName = parseUserInput(topicName);
+        // check if button with that name already exists
+        if (retrieveData(topicName) === null) {
+            storeData(topicName,[]);
+            appendData("TOPIC-NAME-DATA",topicName)
+            refreshTopicWidget(topicName);
+            colorise_button(topicName);
+            updateInfo(topicName)
+            $("#new-topic")[0].value = '';
+        } else {
+            alert("Topic with that name already exists")
+        }
     } else {
-        alert("Topic with that name already exists")
+        alert("Topic name may only contain letters and spaces")
     }
 }
 
